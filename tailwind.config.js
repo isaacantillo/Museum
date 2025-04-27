@@ -4,7 +4,32 @@ module.exports = {
   content: ["./app/**/*.{js,jsx,ts,tsx}"],
   presets: [require("nativewind/preset")],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: '#1a1a1a',
+        secondary: '#333333',
+        accent: '#4a90e2',
+        background: '#ffffff',
+        text: '#222222'
+      },
+      spacing: {
+        '200px': '200px'
+      },
+      fontFamily: {
+        sans: ['System'],
+        serif: ['Georgia']
+      },
+      fontSize: {
+        xs: '12px',
+        sm: '14px',
+        base: '16px',
+        lg: '18px',
+        xl: '20px',
+        '2xl': '24px',
+        '3xl': '30px',
+        '4xl': '36px'
+      }
+    },
   },
   plugins: [],
 }

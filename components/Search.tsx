@@ -1,142 +1,150 @@
-import { View, Text, TextInput, StyleSheet } from 'react-native'
-import React, { useState } from 'react'
-import { Picker } from "@react-native-picker/picker";
-import { router, usePathname } from 'expo-router';
+import React, { View, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { useState } from 'react';
+import { Picker } from '@react-native-picker/picker';
 
-interface SearchProps {
-    onSearch?: (params: {
-        query: string;
-        category: string;
-        style: string;
-        timePeriod: string;
-    }) => void;
-}
+type SearchProps = {
+  onSearch?: (params: { query: string; category: string; style: string; timePeriod: string }) => void;
+  initialQuery?: string;
+};
 
-const Search= ({ onSearch }: SearchProps) => {
-    const [selectedCategory, setSelectedCategory] = useState('all');
-    const [selectedStyle, setSelectedStyle] = useState('all');
-    const [selectedTimePeriod, setSelectedTimePeriod] = useState('all');
-    const [searchQuery, setSearchQuery] = useState('');
+const Search = ({ onSearch, initialQuery = '' }: SearchProps) => {
+  const [query, setQuery] = useState(initialQuery);
+  const [category, setCategory] = useState('all');
+  const [style, setStyle] = useState('all');
+  const [timePeriod, setTimePeriod] = useState('all');
+  const [showFilters, setShowFilters] = useState(false);
 
-    const pathname = usePathname();
+  const handleSubmit = () => {
+    if (onSearch) {
+      onSearch({
+        query,
+        category,
+        style,
+        timePeriod,
+      });
+    }
+  };
 
-    const handleSearch = () => {
-        const params = {
-            query: searchQuery,
-            category: selectedCategory,
-            style: selectedStyle,
-            timePeriod: selectedTimePeriod
-        };
-        console.log(params);
+  return (
+    <View style={styles.container}>
+      {/* Search Input */}
+      <View style={styles.searchContainer}>
+        <TextInput
+          placeholder="Search for an artwork"
+          value={query}
+          onChangeText={setQuery}
+          onSubmitEditing={handleSubmit}
+          style={styles.searchInput}
+          returnKeyType="search"
+        />
+      </View>
 
-        if (onSearch) {
-            onSearch(params);
-        } else if (pathname !== '/artworks') {
-            router.push({
-                pathname: "/artworks", 
-                params
-            });
-        }
-    };
+      {/* Toggle Filters Button (only when hidden) */}
+      {!showFilters && (
+        <TouchableOpacity onPress={() => setShowFilters(true)} style={styles.filtersButton}>
+          <Text style={styles.filtersButtonText}>Show Filters ▼</Text>
+        </TouchableOpacity>
+      )}
 
-    return (
-        <View style={styles.container}>
-            {/* Filters container */}
-            <View style={styles.filtersContainer}>
-                
-                {/* Category picker */}
-                <View style={styles.pickerContainer}>
-                    <Picker
-                        selectedValue={selectedCategory}
-                        onValueChange={(itemValue) => setSelectedCategory(itemValue)}
-                        style={styles.picker}
-                    >
-                        <Picker.Item label="Categories" value="all" />
-                        <Picker.Item label="Paintings" value="paintings" />
-                        <Picker.Item label="Sculptures" value="sculptures" />
-                        <Picker.Item label="Photographs" value="photographs" />
-                        <Picker.Item label="Prints" value="prints" />
-                    </Picker>
-                </View>
-
-                {/* Style picker */}
-                <View style={styles.pickerContainer}>
-                    <Picker
-                        selectedValue={selectedStyle}
-                        onValueChange={(itemValue) => setSelectedStyle(itemValue)}
-                        style={styles.picker}
-                        
-                    >
-                        <Picker.Item label="Styles" value="all" />
-                        <Picker.Item label="Modern" value="modern" />
-                        <Picker.Item label="Contemporary" value="contemporary" />
-                        <Picker.Item label="Impressionism" value="impressionism" />
-                        <Picker.Item label="Abstract" value="abstract" />
-                        <Picker.Item label="Realism" value="realism" />
-                        <Picker.Item label="Pop Art" value="pop-art" />
-                    </Picker>
-                </View>
-
-                {/* Time period picker */}
-                <View style={styles.pickerContainer}>
-                    <Picker
-                        selectedValue={selectedTimePeriod}
-                        onValueChange={(itemValue) => setSelectedTimePeriod(itemValue)}
-                        style={styles.picker}
-                    >
-                        <Picker.Item label="Time Periods" value="all" />
-                        <Picker.Item label="Before 1800" value="before-1800" />
-                        <Picker.Item label="1800-1900" value="1800-1900" />
-                        <Picker.Item label="1900-1950" value="1900-1950" />
-                        <Picker.Item label="After 1950" value="after-1950" />
-                    </Picker>
-                </View>
+      {/* Collapsible Filters */}
+      {showFilters && (
+        <>
+          <View style={styles.filtersContainer}>
+            {/* Full Width Pickers */}
+            <View style={styles.fullPickerContainer}>
+              <Picker
+                selectedValue={category}
+                onValueChange={(itemValue) => setCategory(itemValue)}
+                style={styles.picker}
+              >
+                <Picker.Item label="Category" value="all" />
+                <Picker.Item label="Painting" value="painting" />
+                <Picker.Item label="Sculpture" value="sculpture" />
+                <Picker.Item label="Photography" value="photography" />
+                <Picker.Item label="Textiles" value="textiles" />
+              </Picker>
             </View>
 
-            {/* Search input */}
-            <View style={styles.searchContainer}>
-                <TextInput
-                    value={searchQuery}
-                    onChangeText={setSearchQuery}
-                    placeholder="Search for an artwork"
-                    style={styles.searchInput}
-                    onSubmitEditing={handleSearch}
-                />
+            <View style={styles.fullPickerContainer}>
+              <Picker
+                selectedValue={style}
+                onValueChange={(itemValue) => setStyle(itemValue)}
+                style={styles.picker}
+              >
+                <Picker.Item label="Style" value="all" />
+                <Picker.Item label="Modernism" value="modernism" />
+                <Picker.Item label="Impressionism" value="impressionism" />
+                <Picker.Item label="Cubism" value="cubism" />
+                <Picker.Item label="Abstract" value="abstract" />
+              </Picker>
             </View>
-        </View>
-    )
-}
+
+            <View style={styles.fullPickerContainer}>
+              <Picker
+                selectedValue={timePeriod}
+                onValueChange={(itemValue) => setTimePeriod(itemValue)}
+                style={styles.picker}
+              >
+                <Picker.Item label="Time Period" value="all" />
+                <Picker.Item label="18th Century" value="18th-century" />
+                <Picker.Item label="19th Century" value="19th-century" />
+                <Picker.Item label="20th Century" value="20th-century" />
+                <Picker.Item label="Contemporary" value="contemporary" />
+              </Picker>
+            </View>
+          </View>
+
+          {/* Hide Filters Button (below Pickers) */}
+          <TouchableOpacity onPress={() => setShowFilters(false)} style={styles.filtersButton}>
+            <Text style={styles.filtersButtonText}>Hide Filters ▲</Text>
+          </TouchableOpacity>
+        </>
+      )}
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
-    container: {
-        height: 128,
-        paddingHorizontal: 8,
-        paddingTop: 8
-    },
-    filtersContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginBottom: 8
-    },
-    pickerContainer: {
-        borderRadius: 9999,
-        borderWidth: 2,
-        borderColor: 'black',
-        width: 112,
-        marginHorizontal: 4
-    },
-    picker: {
-        width: '100%'
-    },
-    searchContainer: {
-        width: '100%',
-        backgroundColor: '#fff',
-        borderWidth: 1,
-        borderColor: '#d1d5db',
-        borderRadius: 9999,
-        paddingHorizontal: 16
-    },
-    searchInput: {}
+  container: {
+    paddingHorizontal: 8,
+    paddingTop: 8,
+  },
+  searchContainer: {
+    width: '100%',
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#d1d5db',
+    borderRadius: 9999,
+    paddingHorizontal: 16,
+    marginBottom: 8,
+  },
+  searchInput: {
+    // height: 40,
+  },
+  filtersButton: {
+    alignSelf: 'center',
+    marginVertical: 8,
+  },
+  filtersButtonText: {
+    color: '#1d4ed8',
+    fontWeight: 'bold',
+  },
+  filtersContainer: {
+    width: '100%',
+    marginBottom: 8,
+  },
+  fullPickerContainer: {
+    borderRadius: 9999,
+    borderWidth: 2,
+    borderColor: 'black',
+    marginVertical: 4,
+    overflow: 'hidden',
+  },
+  picker: {
+    width: '100%',
+    // height: 40,
+    textAlign: 'center',
+  },
 });
 
-export default Search
+export default Search;

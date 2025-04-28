@@ -1,51 +1,78 @@
 import { View, Text, FlatList } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useLocalSearchParams } from 'expo-router'
+
 import Search from '@/components/Search'
+import ArtworkResultCard from '@/components/ArtworkResultCard'
+
 import api from '@/services/api'
+
 import type { Artwork } from '@/interfaces/interfaces'
-import useFetch from '@/services/useFetch'
+import { getArtworkImageUrl } from '@/services/utils'
 
 const ArtworksResults = () => {
-  const [params, setParams] = useState({
-    query: '',
-    category: 'all', 
-    style: 'all',
-    timePeriod: 'all'
-  });
+    const { query } = useLocalSearchParams();
+    const [params, setParams] = useState({
+        query: typeof query === 'string' ? query : '',
+        category: 'all',
+        style: 'all',
+        timePeriod: 'all'
+    });
 
-  const { data: artworks, loading, error, refetch } = useFetch<{data: Artwork[]}>(
-    () => params.query ? api.artworks.search(params.query) : api.artworks.getAll(),
-    false
-  );
+    const [artworks, setArtworks] = useState<Artwork[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<Error | null>(null);
 
-  const handleSearch = (searchParams: { query: string; category: string; style: string; timePeriod: string }) => {
-    setParams(searchParams);
-    refetch();
-  };
+    const fetchArtworks = async (query: string) => {
+        try {
+            setLoading(true);
+            setError(null);
+            const response = await api.artworks.search(query);
+            setArtworks(response.data);
+        } catch (err: any) {
+            setError(err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-  return (
-    <View className='flex-1'>
-      <Search onSearch={handleSearch} />
-      {loading ? (
-        <Text className="text-center mt-4">Loading...</Text>
-      ) : error ? (
-        <Text className="text-center mt-4 text-red-500">{error.message}</Text>
-      ) : (
-        <FlatList
-          data={artworks?.data || []}
-          renderItem={({ item }) => (
-            <View className="p-4 border-b border-gray-200">
-              <Text className="text-lg font-bold">{item.title}</Text>
-              {item.artist_title && <Text className="text-gray-600">{item.artist_title}</Text>}
-              {item.date_display && <Text className="text-gray-500">{item.date_display}</Text>}
-            </View>
-          )}
-          keyExtractor={(item) => item.id.toString()}
-          className="flex-1"
-        />
-      )}
-    </View>
-  )
-}
+    useEffect(() => {
+        if (params.query) {
+            fetchArtworks(params.query);
+        }
+    }, [params.query]);
 
-export default ArtworksResults
+    const handleSearch = (searchParams: { query: string; category: string; style: string; timePeriod: string }) => {
+        setParams(searchParams);
+        fetchArtworks(searchParams.query);
+    };
+
+    return (
+        <View className="flex-1 mt-4">
+            <Search onSearch={handleSearch} initialQuery={params.query} />
+            {loading ? (
+                <Text className="text-center mt-4">Loading...</Text>
+            ) : error ? (
+                <Text className="text-center mt-4 text-red-500">{error.message}</Text>
+            ) : (
+                <FlatList
+                    data={artworks || []}
+                    renderItem={({ item }) => (
+                        <View className="px-4">
+                            <ArtworkResultCard
+                                title={item.title}
+                                subtitle={item.artist_title ?? ''}
+                                imageUrl={item.image_id ? getArtworkImageUrl(item.image_id) ?? 'https://via.placeholder.com/300x200.png?text=No+Image' : 'https://via.placeholder.com/300x200.png?text=No+Image'}
+                            />
+                        </View>
+                    )}
+                    keyExtractor={(item) => item.id.toString()}
+                    contentContainerStyle={{ paddingVertical: 8 }}
+                />
+
+            )}
+        </View>
+    );
+};
+
+export default ArtworksResults;

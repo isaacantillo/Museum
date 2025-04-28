@@ -1,8 +1,18 @@
 import { SafeAreaView, ScrollView, Text, View } from "react-native";
+import { useRouter } from 'expo-router'; // 👈 ADD THIS
 import Search from "@/components/Search";
 import ArtCarousel from "@/components/ArtCorousel";
 
 export default function Index() {
+  const router = useRouter();
+
+  const handleSearch = (params: { query: string; category: string; style: string; timePeriod: string }) => {
+    router.push({
+      pathname: '/artworks', // 👈 your Explore page route
+      params: { query: params.query },
+    });
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-white">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -14,7 +24,7 @@ export default function Index() {
         </View>
 
         <View className="p-4">
-          <Search />
+          <Search onSearch={handleSearch} />
         </View>
 
         <View className="p-4 mt-3 items-center">

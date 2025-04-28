@@ -56,8 +56,8 @@ const ArtCarousel = () => {
                 <Text>{error.message}</Text>
             ) : (
                 <Carousel
-                    width={screenWidth * 0.8}
-                    height={screenWidth * 0.8 + 80}
+                    width={screenWidth * 0.95}
+                    height={screenWidth * 0.95 + 80}
                     data={randomArtworks}
                     renderItem={renderItem}
                     loop

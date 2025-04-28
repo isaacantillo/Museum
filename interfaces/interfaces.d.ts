@@ -15,7 +15,9 @@ export interface Artwork {
   } | null;
   dimensions: string | null;
   credit_line: string | null;
+  image_id: string | null;
 }
+
 
 export interface ArtworkResponse {
   data: Artwork[];

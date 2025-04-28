@@ -3,7 +3,7 @@ import type { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axio
 import type { ArtworkResponse, ArtworkSearchResponse, Artwork } from '@/interfaces/interfaces';
 
 const BASE_URL = 'https://api.artic.edu/api/v1';
-const FIELDS = "id,title,description,artist_title,medium_display,date_display,publication_history,place_of_origin,thumbnail,dimensions,credit_line,publication_history";
+const FIELDS = "id,title,description,artist_title,medium_display,date_display,publication_history,place_of_origin,thumbnail,dimensions,credit_line,publication_history,image_id";
 
 // Create axios instance with default config
 const api = {

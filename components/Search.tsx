@@ -54,7 +54,10 @@ const Search = ({ onSearch, initialQuery = '' }: SearchProps) => {
             <View style={styles.fullPickerContainer}>
               <Picker
                 selectedValue={category}
-                onValueChange={(itemValue) => setCategory(itemValue)}
+                onValueChange={(itemValue) => {
+                    setCategory(itemValue);
+                    handleSubmit();
+                }}
                 style={styles.picker}
               >
                 <Picker.Item label="Category" value="all" />
@@ -68,7 +71,10 @@ const Search = ({ onSearch, initialQuery = '' }: SearchProps) => {
             <View style={styles.fullPickerContainer}>
               <Picker
                 selectedValue={style}
-                onValueChange={(itemValue) => setStyle(itemValue)}
+                onValueChange={(itemValue) => {
+                    setStyle(itemValue);
+                    handleSubmit();
+                }}
                 style={styles.picker}
               >
                 <Picker.Item label="Style" value="all" />
@@ -82,7 +88,10 @@ const Search = ({ onSearch, initialQuery = '' }: SearchProps) => {
             <View style={styles.fullPickerContainer}>
               <Picker
                 selectedValue={timePeriod}
-                onValueChange={(itemValue) => setTimePeriod(itemValue)}
+                onValueChange={(itemValue) => {
+                    setTimePeriod(itemValue);
+                    handleSubmit();
+                }}
                 style={styles.picker}
               >
                 <Picker.Item label="Time Period" value="all" />

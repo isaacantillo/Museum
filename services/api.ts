@@ -42,18 +42,31 @@ const api = {
       }
     },
 
-    search: async (query: string): Promise<ArtworkSearchResponse> => {
+    
+    search: async (queryOrParams: string | Record<string, any>): Promise<ArtworkSearchResponse> => {
       try {
+        let params: any;
+    
+        if (typeof queryOrParams === 'string') {
+          params = {
+            q: queryOrParams,
+            fields: FIELDS,
+          };
+        } else {
+          params = {
+            ...queryOrParams,
+            fields: FIELDS,
+          };
+        }
+    
         const response = await axios.get<ArtworkSearchResponse>(`${BASE_URL}/artworks/search`, {
-          params: {
-            q: query,
-            fields: FIELDS
-          }
+          params,
         });
+    
         return response.data;
       } catch (error) {
         if (axios.isAxiosError(error)) {
-          throw new Error(`Failed to search artworks with query "${query}": ${error.message}`);
+          throw new Error(`Failed to search artworks: ${error.message}`);
         }
         throw error;
       }

@@ -8,7 +8,7 @@ import ArtworkResultCard from '@/components/ArtworkResultCard'
 import api from '@/services/api'
 
 import type { Artwork } from '@/interfaces/interfaces'
-import { getArtworkImageUrl } from '@/services/utils'
+import { buildSearchParams, getArtworkImageUrl } from '@/services/utils'
 
 const ArtworksResults = () => {
     const { query } = useLocalSearchParams();
@@ -23,11 +23,14 @@ const ArtworksResults = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<Error | null>(null);
 
-    const fetchArtworks = async (query: string) => {
+    const fetchArtworks = async (searchParams: { query: string; category: string; style: string; timePeriod: string }) => {
         try {
             setLoading(true);
             setError(null);
-            const response = await api.artworks.search(query);
+    
+            const queryParams = buildSearchParams(searchParams);
+            const response = await api.artworks.search(queryParams);
+    
             setArtworks(response.data);
         } catch (err: any) {
             setError(err);
@@ -35,16 +38,17 @@ const ArtworksResults = () => {
             setLoading(false);
         }
     };
+    
 
     useEffect(() => {
         if (params.query) {
-            fetchArtworks(params.query);
+            fetchArtworks(params);
         }
-    }, [params.query]);
+    }, [params]);
 
     const handleSearch = (searchParams: { query: string; category: string; style: string; timePeriod: string }) => {
         setParams(searchParams);
-        fetchArtworks(searchParams.query);
+        fetchArtworks(searchParams);
     };
 
     return (

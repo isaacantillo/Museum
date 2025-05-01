@@ -64,6 +64,7 @@ const ArtworksResults = () => {
                     renderItem={({ item }) => (
                         <View className="px-4">
                             <ArtworkResultCard
+                                id={item.id.toString()}
                                 title={item.title}
                                 subtitle={item.artist_title ?? ''}
                                 imageUrl={item.image_id ? getArtworkImageUrl(item.image_id) ?? 'https://via.placeholder.com/300x200.png?text=No+Image' : 'https://via.placeholder.com/300x200.png?text=No+Image'}

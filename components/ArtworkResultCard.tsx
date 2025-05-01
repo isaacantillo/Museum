@@ -1,15 +1,26 @@
+import { useRouter } from 'expo-router';
 import React from 'react';
-import { View, Text, ImageBackground, StyleSheet } from 'react-native';
+import { View, Text, ImageBackground, StyleSheet, Pressable } from 'react-native';
 
 type ArtworkResultCardProps = {
+  id: string;
   title: string;
   subtitle?: string;
   imageUrl: string;
 };
 
-const ArtworkResultCard = ({ title, subtitle, imageUrl }: ArtworkResultCardProps) => {
+const ArtworkResultCard = ({ id, title, subtitle, imageUrl }: ArtworkResultCardProps) => {
+  const router = useRouter();
+
+  const handlePress = () => {
+    router.push({
+      pathname: '/artworks/[id]',
+      params: { id: id }
+    });
+  };
+
   return (
-    <View style={styles.card}>
+    <Pressable onPress={handlePress} style={styles.card}>
       <ImageBackground
         source={{ uri: imageUrl }}
         style={styles.image}
@@ -20,7 +31,7 @@ const ArtworkResultCard = ({ title, subtitle, imageUrl }: ArtworkResultCardProps
           {subtitle && <Text numberOfLines={1} ellipsizeMode="tail" style={styles.subtitle}>{subtitle}</Text>}
         </View>
       </ImageBackground>
-    </View>
+    </Pressable>
   );
 };
 

@@ -42,7 +42,7 @@ const Search = ({ onSearch, initialQuery = '' }: SearchProps) => {
       {/* Toggle Filters Button (only when hidden) */}
       {!showFilters && (
         <TouchableOpacity onPress={() => setShowFilters(true)} style={styles.filtersButton}>
-          <Text style={styles.filtersButtonText}>Show Filters ▼</Text>
+          <Text style={styles.filtersButtonText} className="text-museum-red">Show Filters ▼</Text>
         </TouchableOpacity>
       )}
 

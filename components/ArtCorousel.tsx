@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         backgroundColor: '#fff',
         paddingBottom: 10,
-        marginVertical: 10,
+        marginVertical: 5,
         alignItems: 'center',
         width: '100%',
         alignSelf: 'center',

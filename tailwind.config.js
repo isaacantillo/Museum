@@ -10,7 +10,10 @@ module.exports = {
         secondary: '#333333',
         accent: '#4a90e2',
         background: '#ffffff',
-        text: '#222222'
+        text: '#222222',
+        'museum-red': '#A7233B',
+        'museum-dark': '#343333',
+        'museum-gray': '#7C746E'
       },
       spacing: {
         '200px': '200px'

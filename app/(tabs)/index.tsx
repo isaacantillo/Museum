@@ -16,7 +16,7 @@ export default function Index() {
   return (
     <SafeAreaView className="flex-1 bg-white">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View className="bg-black p-6">
+        <View className="bg-museum-gray p-6">
           <Text className="text-white text-2xl font-bold">WELCOME TO</Text>
           <Text className="text-white text-2xl font-bold">THE ART</Text>
           <Text className="text-white text-2xl font-bold">INSTITUTE OF</Text>

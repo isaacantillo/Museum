@@ -1,33 +1,36 @@
-import React, { View, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
-import { useState } from 'react';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
 import { Picker } from '@react-native-picker/picker';
 
 type SearchProps = {
   onSearch?: (params: { query: string; category: string; style: string; timePeriod: string }) => void;
   initialQuery?: string;
+  initialCategory?: string;
+  initialStyle?: string;
+  initialTimePeriod?: string;
 };
 
-const Search = ({ onSearch, initialQuery = '' }: SearchProps) => {
+const Search = ({
+  onSearch,
+  initialQuery = '',
+  initialCategory = 'all',
+  initialStyle = 'all',
+  initialTimePeriod = 'all',
+}: SearchProps) => {
   const [query, setQuery] = useState(initialQuery);
-  const [category, setCategory] = useState('all');
-  const [style, setStyle] = useState('all');
-  const [timePeriod, setTimePeriod] = useState('all');
+  const [category, setCategory] = useState(initialCategory);
+  const [style, setStyle] = useState(initialStyle);
+  const [timePeriod, setTimePeriod] = useState(initialTimePeriod);
   const [showFilters, setShowFilters] = useState(false);
 
   const handleSubmit = () => {
     if (onSearch) {
-      onSearch({
-        query,
-        category,
-        style,
-        timePeriod,
-      });
+      onSearch({ query, category, style, timePeriod });
     }
   };
 
   return (
     <View style={styles.container}>
-      {/* Search Input */}
       <View style={styles.searchContainer}>
         <TextInput
           placeholder="Search for an artwork"
@@ -39,24 +42,21 @@ const Search = ({ onSearch, initialQuery = '' }: SearchProps) => {
         />
       </View>
 
-      {/* Toggle Filters Button (only when hidden) */}
       {!showFilters && (
         <TouchableOpacity onPress={() => setShowFilters(true)} style={styles.filtersButton}>
-          <Text style={styles.filtersButtonText} className="text-museum-red">Show Filters ▼</Text>
+          <Text style={styles.filtersButtonText}>Show Filters ▼</Text>
         </TouchableOpacity>
       )}
 
-      {/* Collapsible Filters */}
       {showFilters && (
         <>
           <View style={styles.filtersContainer}>
-            {/* Full Width Pickers */}
             <View style={styles.fullPickerContainer}>
               <Picker
                 selectedValue={category}
-                onValueChange={(itemValue) => {
-                    setCategory(itemValue);
-                    handleSubmit();
+                onValueChange={(val) => {
+                  setCategory(val);
+                  handleSubmit();
                 }}
                 style={styles.picker}
               >
@@ -71,9 +71,9 @@ const Search = ({ onSearch, initialQuery = '' }: SearchProps) => {
             <View style={styles.fullPickerContainer}>
               <Picker
                 selectedValue={style}
-                onValueChange={(itemValue) => {
-                    setStyle(itemValue);
-                    handleSubmit();
+                onValueChange={(val) => {
+                  setStyle(val);
+                  handleSubmit();
                 }}
                 style={styles.picker}
               >
@@ -88,9 +88,9 @@ const Search = ({ onSearch, initialQuery = '' }: SearchProps) => {
             <View style={styles.fullPickerContainer}>
               <Picker
                 selectedValue={timePeriod}
-                onValueChange={(itemValue) => {
-                    setTimePeriod(itemValue);
-                    handleSubmit();
+                onValueChange={(val) => {
+                  setTimePeriod(val);
+                  handleSubmit();
                 }}
                 style={styles.picker}
               >
@@ -103,7 +103,6 @@ const Search = ({ onSearch, initialQuery = '' }: SearchProps) => {
             </View>
           </View>
 
-          {/* Hide Filters Button (below Pickers) */}
           <TouchableOpacity onPress={() => setShowFilters(false)} style={styles.filtersButton}>
             <Text style={styles.filtersButtonText}>Hide Filters ▲</Text>
           </TouchableOpacity>
@@ -127,9 +126,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginBottom: 8,
   },
-  searchInput: {
-    // height: 40,
-  },
+  searchInput: {},
   filtersButton: {
     alignSelf: 'center',
     marginVertical: 8,
@@ -151,7 +148,6 @@ const styles = StyleSheet.create({
   },
   picker: {
     width: '100%',
-    // height: 40,
     textAlign: 'center',
   },
 });
